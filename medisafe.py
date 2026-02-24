@@ -1,35 +1,96 @@
 import time
 from datetime import datetime, timedelta
 
-# --- 1. ข้อมูลรายการยา (Data) ---
+# --- 1. Medication Data Configuration ---
+# days_thai: Strictly following your Thai FDA transcript (USP 795)
+# days_nhs: Following NHS UK standards
 CATEGORIES = {
-    "1": {"en_de": "MDS / Weekly Blister Pack (Wöchentliche Blisterpackung)", "th": "ยาจัดแผงรายสัปดาห์ (MDS)", "days": 56},
-    "2": {"en_de": "Original Blister Pack (Originalblister)", "th": "ยาเม็ดในแผงฟอยล์เดิม", "days": 3650},
-    "3": {"en_de": "Repacked Medicine (Umgefüllte Medikamente)", "th": "ยาที่แบ่งใส่ขวดใหม่", "days": 30},
-    "4": {"en_de": "Oral Liquid / Syrup (Saft oder Sirup)", "th": "ยาน้ำทั่วไป / ยาน้ำเชื่อม", "days": 180},
-    "5": {"en_de": "Antibiotic Syrup - Room Temp (Antibiotika - Raumtemp.)", "th": "ยาปฏิชีวนะผสมน้ำ (อุณหภูมิห้อง)", "days": 7},
-    "6": {"en_de": "Antibiotic Syrup - Fridge (Antibiotika - Kühlschrank)", "th": "ยาปฏิชีวนะผสมน้ำ (ตู้เย็น)", "days": 14},
-    "7": {"en_de": "Cream in Jar (Creme im Tiegel)", "th": "ยาทากระปุก", "days": 30},
-    "8": {"en_de": "Cream/Ointment Tube (Creme / Salbe in der Tube)", "th": "ยาทาหลอด (ผิวหนัง)", "days": 90},
-    "9": {"en_de": "Eye / Ear Drops (Augen- / Ohrentropfen)", "th": "ยาหยอดตา / หู", "days": 28},
-    "10": {"en_de": "Single-dose Eye Drops (Einzeldosis-Augentropfen)", "th": "ยาหยอดตาหลอดเล็ก (SDU)", "days": 1},
-    "11": {"en_de": "Insulin - In Use (Insulin - im Gebrauch)", "th": "อินซูลินที่กำลังใช้งาน", "days": 28},
-    "12": {"en_de": "Inhaler / MDI (Inhalator)", "th": "ยาพ่น (Inhaler)", "days": 3650}
+    "1": {
+        "en_de": "MDS / Weekly Blister Pack (Wöchentliche Blisterpackung)", 
+        "th": "ยาเม็ด / แคปซูล (แบ่งใส่แผงรายสัปดาห์)", 
+        "days_nhs": 56, 
+        "days_thai": 180  # Thai FDA: Max 6 months
+    },
+    "2": {
+        "en_de": "Original Blister Pack (Originalblister)", 
+        "th": "ยาเม็ดในแผงฟอยล์เดิม", 
+        "days_nhs": 3650, 
+        "days_thai": 3650  # Use Manufacturer Expiry
+    },
+    "3": {
+        "en_de": "Repacked Medicine (Umgefüllte Medikamente)", 
+        "th": "ยาที่แบ่งใส่ขวดใหม่", 
+        "days_nhs": 30, 
+        "days_thai": 180  # Thai FDA: Max 6 months (as per tablets/powders repackaged)
+    },
+    "4": {
+        "en_de": "Oral Liquid / Syrup (Saft oder Sirup)", 
+        "th": "ยาน้ำทั่วไป / ยาน้ำเชื่อม (แบ่งบรรจุ)", 
+        "days_nhs": 180, 
+        "days_thai": 14   # Thai FDA: Max 14 days (Refrigerated 2-8°C)
+    },
+    "5": {
+        "en_de": "Antibiotic Syrup - Room Temp (Antibiotika - Raumtemp.)", 
+        "th": "ยาปฏิชีวนะผสมน้ำ (อุณหภูมิห้อง)", 
+        "days_nhs": 7, 
+        "days_thai": 7
+    },
+    "6": {
+        "en_de": "Antibiotic Syrup - Fridge (Antibiotika - Kühlschrank)", 
+        "th": "ยาปฏิชีวนะผสมน้ำ (ตู้เย็น)", 
+        "days_nhs": 14, 
+        "days_thai": 14
+    },
+    "7": {
+        "en_de": "Cream in Jar - Aqueous (Creme im Tiegel)", 
+        "th": "ยาทากระปุก (สูตรน้ำ/Aqueous)", 
+        "days_nhs": 30, 
+        "days_thai": 30   # Thai FDA: Max 30 days
+    },
+    "8": {
+        "en_de": "Cream/Ointment Tube (Creme / Salbe in der Tube)", 
+        "th": "ยาทาหลอด / สูตรไม่มีน้ำ (Non-aqueous)", 
+        "days_nhs": 90, 
+        "days_thai": 90   # Thai FDA: Max 90 days
+    },
+    "9": {
+        "en_de": "Eye / Ear Drops (Augen- / Ohrentropfen)", 
+        "th": "ยาหยอดตา / หู", 
+        "days_nhs": 28, 
+        "days_thai": 30   # Thai FDA: 1 month after opening
+    },
+    "10": {
+        "en_de": "Single-dose Eye Drops (Einzeldosis-Augentropfen)", 
+        "th": "ยาหยอดตาหลอดเล็ก (SDU)", 
+        "days_nhs": 1, 
+        "days_thai": 1
+    },
+    "11": {
+        "en_de": "Insulin - In Use (Insulin - im Gebrauch)", 
+        "th": "อินซูลินที่กำลังใช้งาน", 
+        "days_nhs": 28, 
+        "days_thai": 28
+    },
+    "12": {
+        "en_de": "Inhaler / MDI (Inhalator)", 
+        "th": "ยาพ่น (Inhaler)", 
+        "days_nhs": 3650, 
+        "days_thai": 3650
+    }
 }
 
 def start_app():
-    # เลือกภาษาเพียงครั้งเดียวตอนเริ่มโปรแกรม
+    # User selects language preference at the start
     print("========================================")
-    print("      MED-TRACKER: EXPIRY HELPER        ")
+    print("      MED-TRACKER: GLOBAL STANDARDS     ")
     print("========================================")
     print("Choose Language / Sprache wählen:")
-    print("1. English / Deutsch")
-    print("2. ภาษาไทย (Thai)")
+    print("1. English / Deutsch (NHS Standard)")
+    print("2. ภาษาไทย (Thai FDA / USP Standard)")
     
     lang_choice = input("\nSelect (1/2): ")
     is_thai = lang_choice == "2"
 
-    # เริ่มระบบวนลูปตรวจสอบยา
     while True:
         menu_title = "--- SELECT CATEGORY ---" if not is_thai else "--- เลือกหมวดหมู่ยา ---"
         print(f"\n{menu_title}")
@@ -40,13 +101,13 @@ def start_app():
 
         choice = input("\nChoice (1-12) [or 'q' to quit]: ")
         
-        # กด q เพื่อออกจากโปรแกรม
         if choice.lower() == 'q':
             break
 
         if choice in CATEGORIES:
             item = CATEGORIES[choice]
-            days = item['days']
+            # Select days based on language/standard
+            days = item['days_thai'] if is_thai else item['days_nhs']
             
             if days > 1000:
                 msg = ">>> Follow Manufacturer's Expiry Date <<<" if not is_thai else ">>> ใช้ตามวันหมดอายุที่ระบุบนกล่อง <<<"
@@ -87,7 +148,6 @@ def start_app():
                     err = "Invalid date!" if not is_thai else "วันที่ไม่ถูกต้อง!"
                     print(f"\nError: {err}")
             
-            # ถามว่าต้องการตรวจสอบยาตัวอื่นต่อไหม
             again_prompt = "\nCheck another item? (y/n): " if not is_thai else "\nตรวจสอบรายการอื่นต่อไหม? (y/n): "
             again = input(again_prompt)
             if again.lower() != 'y':
@@ -96,7 +156,6 @@ def start_app():
             err_choice = "Invalid selection!" if not is_thai else "เลือกไม่ถูกต้อง!"
             print(f"\nError: {err_choice}")
 
-    # ข้อความบอกลา
     bye = "Goodbye! / Auf Wiedersehen!" if not is_thai else "ขอบคุณที่ใช้งานค่ะ!"
     print(f"\n{bye}")
 
