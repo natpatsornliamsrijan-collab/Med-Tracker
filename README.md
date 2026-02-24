@@ -11,6 +11,13 @@ Many medications have a shortened shelf life once the original seal is broken. T
 ## 💡 Why I built this
 During my experience in pharmacy, I noticed that many patients were unsure about how long medicines remain safe after opening. Especially in care homes where multiple medications are used, incorrect expiry tracking can pose risks. This project combines my healthcare background with my interest in software development to create a practical safety tool.
 
+## ⚠️ What if the opening date is forgotten?
+Safety is our top priority. If the user cannot remember the exact opening date, we recommend the following safety protocols:
+* **Use the Dispensed Date:** Use the date the medicine was received as a conservative starting point.
+* **Consult a Professional:** If both dates are unknown, **Consult a pharmacist** immediately.
+* **Physical Inspection:** Check for any changes in color, smell, or consistency.
+* **Proactive Tracking:** Always write the opening date on the medication label immediately.
+
 ## ⚖️ Medical Guidance & References
 The calculation logic in this software is strictly based on official healthcare guidelines:
 * **NHS Gloucestershire Health and Care:** Good Practice Guidance for Expiry Dates.
@@ -21,7 +28,6 @@ The calculation logic in this software is strictly based on official healthcare 
 * **Oral Liquids:** 6 months (180 days) after opening.
 * **Eye/Ear/Nose Drops:** 28 days (1 month) after opening.
 * **Insulin (In-use):** 28 days at room temperature.
-* **Antibiotics (Reconstituted):** 7 days after mixing.
 
 ## 🚀 How to Use
 1. Run the Python script (`medisafe.py`).
