@@ -4,9 +4,12 @@ A Python tool designed to improve patient safety by calculating the precise expi
 
 ## 📋 Project Overview
 Many medications have a shortened shelf life once the original seal is broken. This tool helps users:
-1. Select the correct medication category.
-2. Enter the date of opening (Day/Month/Year).
-3. Receive an instant expiry date calculation and voice notification.
+1. **Select** the correct medication category.
+2. **Enter** the date of opening (Day/Month/Year).
+3. **Receive** an instant expiry date calculation and voice notification.
+
+## 💡 Why I built this
+During my experience in pharmacy, I noticed that many patients were unsure about how long medicines remain safe after opening. Especially in care homes where multiple medications are used, incorrect expiry tracking can pose risks. This project combines my healthcare background with my interest in software development to create a practical safety tool.
 
 ## ⚖️ Medical Guidance & References
 The calculation logic in this software is strictly based on official healthcare guidelines:
@@ -21,12 +24,11 @@ The calculation logic in this software is strictly based on official healthcare 
 * **Antibiotics (Reconstituted):** 7 days after mixing.
 
 ## 🚀 How to Use
-1. Run the Python script.
+1. Run the Python script (`medisafe.py`).
 2. Listen to the voice options (TTS enabled).
 3. Select your medication type (1-12).
 4. Enter the opening date in **DD/MM/YYYY** format.
 5. The system will alert you if the medicine is safe to use or must be discarded.
 
 ---
-**Disclaimer:** This tool is for educational purposes and to assist in tracking. Always verify with the physical label provided by your pharmacist and the manufacturer's instructions.# medisafe-nhs-calc
-Medication Expiry Calculator based on NHS Guidance.
+**Disclaimer:** This tool is for educational purposes and to assist in tracking. Always verify with the physical label provided by your pharmacist and the manufacturer's instructions.
