@@ -8,9 +8,10 @@ The system performs a **dual-validation process** by comparing the manufacturerâ
 
 ## ðŸ’¡ Why I Built This
 
-During my pharmacy practice, I observed a recurring safety issue: **The expiry date printed on a medicine box does not automatically apply after the product has been opened.**
+During my pharmacy practice, I noticed that many patients misunderstand medicine expiry dates after opening.
+This is especially a problem for older patients who take multiple medications and may forget when each one expires.
 
-Once the seal is broken, environmental factors such as humidity, oxidation, and microbial exposure begin to affect stability. For example, sterile eye drops may have a shelf life of two years, yet after opening, they are typically safe for only 28 to 30 days.
+To address this, I developed a simple tool that helps patients track and detect medication expiry more clearly and safely.
 
 
 
